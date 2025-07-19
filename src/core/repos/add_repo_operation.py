@@ -1,10 +1,10 @@
 from libs.duckdb.provider import DuckDbClient
 
-from dependency_injector.wiring import inject, Provide
+from dependency_injector.wiring import inject
 
-@inject
+
 class AddRepoOperation:
-    def __init__(self, duckdb_client: DuckDbClient = Provide[DuckDbClient]) -> None:
+    def __init__(self, duckdb_client: DuckDbClient) -> None:
         """
         Initialize the RepoOperations class.
         This class is responsible for performing operations related to repositories.
@@ -17,7 +17,7 @@ class AddRepoOperation:
     def execute(self, path: str) -> None:
         self.duckdb_client.execute(
             """
-            INSERT INTO repos (path) VALUES (?);
+            INSERT INTO repos (id, path) VALUES (?, ?);
             """,
-            (path,)
+            (1,path),
         )

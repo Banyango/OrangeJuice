@@ -1,17 +1,34 @@
 import duckdb
-from typing import Optional, Any, List, Tuple
+from fast_depends import Depends
+from typing import Optional, Any, List, Tuple, Annotated
 from loguru import logger
+
+from app.config import AppConfig
 
 
 class DuckDbClient:
-    def __init__(self, db_path: str = "orangejuice.db") -> None:
+    def __init__(self, app_config: AppConfig) -> None:
         """
         Initialize the DuckDbClient and connect to the DuckDB database.
 
         Args:
-            db_path (str): Path to the DuckDB database file. Defaults to 'orangejuice.db'.
+            app_config (AppConfig): An instance of AppConfig containing the database path.
         """
-        self.connection: duckdb.DuckDBPyConnection = duckdb.connect(database=db_path)
+        self.connection: duckdb.DuckDBPyConnection = duckdb.connect(database=app_config.db_path)
+
+        logger.info("Initializing orange juice database")
+
+        self.execute(
+            """
+            CREATE TABLE IF NOT EXISTS repos
+            (
+                id INTEGER NOT NULL,
+                path TEXT NOT NULL
+            )
+            """
+        )
+
+        logger.info("Database initialized successfully.")
 
     def execute(self, query: str, params: Optional[Any] = None) -> List[Tuple]:
         """
@@ -43,16 +60,20 @@ class DuckDbClient:
         """
         self.connection.close()
 
-    def initialize(self):
-        logger.info(f"Initializing orange juice database")
-        self.execute(
-            """
-            CREATE TABLE IF NOT EXISTS repos (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                name TEXT NOT NULL,
-                description TEXT,
-                path TEXT NOT NULL,                
-            )
-            """
-        )
-        pass
+
+def duckdb_client_provider(db_path: str = "orangejuice.duckdb") -> DuckDbClient:
+    """
+    Provides an instance of DuckDbClient.
+
+    Args:
+        db_path (str): Path to the DuckDB database file. Defaults to 'orangejuice.duckdb'.
+
+    Returns:
+        DuckDbClient: An instance of DuckDbClient.
+    """
+    client = DuckDbClient(db_path)
+    client.initialize()
+    return client
+
+
+DependsOnDuckDbClient = Annotated[DuckDbClient, Depends(duckdb_client_provider)]

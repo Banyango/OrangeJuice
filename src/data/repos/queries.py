@@ -4,9 +4,9 @@ from dependency_injector.wiring import Provide, inject
 
 from libs.duckdb.provider import DuckDbClient
 
-@inject
+
 class RepoQueries:
-    def __init__(self, duckdb_client: DuckDbClient = Provide[DuckDbClient]) -> None:
+    def __init__(self, duckdb_client: DuckDbClient) -> None:
         """
         Initialize the RepoQueries class.
         This class is responsible for executing queries related to repositories.
