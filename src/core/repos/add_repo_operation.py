@@ -1,3 +1,4 @@
+from entities.repos.entities import Repo
 from libs.duckdb.provider import DuckDbClient
 
 from dependency_injector.wiring import inject
@@ -14,10 +15,15 @@ class AddRepoOperation:
         """
         self.duckdb_client = duckdb_client
 
-    def execute(self, path: str) -> None:
-        self.duckdb_client.execute(
-            """
-            INSERT INTO repos (id, path) VALUES (?, ?);
-            """,
-            (1,path),
-        )
+    def execute(self, path: str, name: str) -> None:
+        with self.duckdb_client.session() as session:
+            repo = session.query(Repo).filter(Repo.path == path).one_or_none()
+
+            if repo is not None:
+                raise ValueError(f"Repository with path '{path}' already exists.")
+
+            if repo is None:
+                repo = Repo(path=path, name=name)
+                session.add(repo)
+                session.commit()
+

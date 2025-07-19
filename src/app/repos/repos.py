@@ -25,10 +25,12 @@ def ls(repo_queries: RepoQueries) -> list:
 
 
 @click.argument("path", type=click.Path(exists=True, file_okay=False, dir_okay=True))
+@click.argument("name", type=str)
 @click.command()
 @inject
 def create(
     path: str,
+    name: str,
     add_repo_operation: AddRepoOperation = Provide[Container.add_repo_operation],
 ) -> None:
     """
@@ -36,6 +38,7 @@ def create(
 
     Args:
         path (str): The path to the repository.
+        name (str): The name of the repository.
         add_repo_operation (AddRepoOperation): The operation to add a repository.
     """
-    add_repo_operation.execute(path)
+    add_repo_operation.execute(path, name)

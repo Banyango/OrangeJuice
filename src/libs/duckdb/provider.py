@@ -1,9 +1,9 @@
-import duckdb
-from fast_depends import Depends
-from typing import Optional, Any, List, Tuple, Annotated
 from loguru import logger
+from sqlalchemy import create_engine
+from sqlalchemy.orm.session import Session
 
 from app.config import AppConfig
+from entities.repos.entities import Base
 
 
 class DuckDbClient:
@@ -14,66 +14,25 @@ class DuckDbClient:
         Args:
             app_config (AppConfig): An instance of AppConfig containing the database path.
         """
-        self.connection: duckdb.DuckDBPyConnection = duckdb.connect(database=app_config.db_path)
-
         logger.info("Initializing orange juice database")
 
-        self.execute(
-            """
-            CREATE TABLE IF NOT EXISTS repos
-            (
-                id INTEGER NOT NULL,
-                path TEXT NOT NULL
-            )
-            """
-        )
+        self.engine = create_engine(f"duckdb:///{app_config.db_path}")
+
+        Base.metadata.create_all(self.engine)
 
         logger.info("Database initialized successfully.")
 
-    def execute(self, query: str, params: Optional[Any] = None) -> List[Tuple]:
+    def session(self) -> Session:
         """
-        Execute a SQL query against the DuckDB database.
-
-        Args:
-            query (str): The SQL query to execute.
-            params (Optional[Any]): Optional query parameters.
+        Create a new session for interacting with the DuckDB database.
 
         Returns:
-            List[Tuple]: Query results as a list of tuples.
+            Session: A new SQLAlchemy session bound to the DuckDB engine.
         """
-        cursor = self.connection.cursor()
-        try:
-            if params:
-                cursor.execute(query, params)
-            else:
-                cursor.execute(query)
-            return cursor.fetchall()
-        except Exception as e:
-            print(f"An error occurred: {e}")
-            return []
-        finally:
-            cursor.close()
+        return Session(bind=self.engine)
 
     def close(self) -> None:
         """
         Close the connection to the DuckDB database.
         """
-        self.connection.close()
-
-
-def duckdb_client_provider(db_path: str = "orangejuice.duckdb") -> DuckDbClient:
-    """
-    Provides an instance of DuckDbClient.
-
-    Args:
-        db_path (str): Path to the DuckDB database file. Defaults to 'orangejuice.duckdb'.
-
-    Returns:
-        DuckDbClient: An instance of DuckDbClient.
-    """
-    client = DuckDbClient(db_path)
-    client.initialize()
-    return client
-
-
-DependsOnDuckDbClient = Annotated[DuckDbClient, Depends(duckdb_client_provider)]
+        self.engine.dispose()
