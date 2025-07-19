@@ -1284,6 +1284,7 @@ dependencies = [
     { name = "sqlalchemy" },
     { name = "textual" },
     { name = "tiktoken" },
+    { name = "tqdm" },
 ]
 
 [package.metadata]
@@ -1303,6 +1304,7 @@ requires-dist = [
     { name = "sqlalchemy", specifier = ">=2.0.41" },
     { name = "textual", specifier = ">=4.0.0" },
     { name = "tiktoken", specifier = ">=0.9.0" },
+    { name = "tqdm", specifier = ">=4.67.1" },
 ]
 
 [[package]]

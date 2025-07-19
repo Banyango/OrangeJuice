@@ -1,7 +1,10 @@
-from entities.repos.entities import Repo
-from libs.duckdb.provider import DuckDbClient
+from tqdm import tqdm
 
-from dependency_injector.wiring import inject
+from core.repos.errors import RepoAlreadyExistsError
+from entities.commits import Commit
+from entities.repos import Repo
+from git import Repo as GitRepo
+from libs.duckdb.provider import DuckDbClient
 
 
 class AddRepoOperation:
@@ -20,10 +23,24 @@ class AddRepoOperation:
             repo = session.query(Repo).filter(Repo.path == path).one_or_none()
 
             if repo is not None:
-                raise ValueError(f"Repository with path '{path}' already exists.")
+                raise RepoAlreadyExistsError(path)
 
-            if repo is None:
-                repo = Repo(path=path, name=name)
-                session.add(repo)
-                session.commit()
+            repo = Repo(path=path, name=name)
+            session.add(repo)
+            session.flush()
 
+            # get all commits in a repo.
+            git_repo = GitRepo(path)
+            for commit in tqdm(git_repo.iter_commits(), desc=f"Adding commits for {name}"):
+                print(f"Adding commit {commit.hexsha} for {name}")
+
+                # cache all commits into vectordb.
+                session.add(Commit(
+                    commit_hash=commit.hexsha,
+                    author=commit.author.name,
+                    message=commit.message,
+                    date=str(commit.committed_datetime),
+                    repo_id=repo.id,
+                ))
+
+            session.commit()

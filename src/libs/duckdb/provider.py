@@ -3,7 +3,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm.session import Session
 
 from app.config import AppConfig
-from entities.repos.entities import Base
+from entities.repos import Base
 
 
 class DuckDbClient:

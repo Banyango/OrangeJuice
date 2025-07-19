@@ -1,8 +1,10 @@
 import click
+from loguru import logger
 
 from app.container import Container
 from app.repos.responses import RepoResponseModel
 from core.repos.add_repo_operation import AddRepoOperation
+from core.repos.errors import RepoAlreadyExistsError
 from data.repos.queries import RepoQueries
 
 from dependency_injector.wiring import Provide, inject
@@ -41,4 +43,7 @@ def create(
         name (str): The name of the repository.
         add_repo_operation (AddRepoOperation): The operation to add a repository.
     """
-    add_repo_operation.execute(path, name)
+    try:
+        add_repo_operation.execute(path, name)
+    except RepoAlreadyExistsError:
+        logger.error(f"Repository '{name}' already exists.")

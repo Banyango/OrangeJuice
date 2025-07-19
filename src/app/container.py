@@ -33,7 +33,8 @@ class Container(containers.DeclarativeContainer):
 
     # operations
     add_repo_operation = providers.Factory(
-        AddRepoOperation, duckdb_client=duckdb_client
+        AddRepoOperation,
+        duckdb_client=duckdb_client
     )
 
     # queries

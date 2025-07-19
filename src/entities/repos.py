@@ -1,6 +1,7 @@
 import datetime
 
 from sqlalchemy import Column, Integer, String, Sequence
+from sqlalchemy.orm import relationship
 
 from entities.base import Base
 
@@ -10,4 +11,4 @@ class Repo(Base):
     id = Column(Integer, Sequence("repo_id_sequence"), primary_key=True)
     name = Column(String, nullable=False)
     path = Column(String, nullable=False)
-
+    commits = relationship("Commit", backref="repo")
