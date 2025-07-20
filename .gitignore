@@ -1,12 +1,69 @@
-# Python-generated files
+# Python artifacts
 __pycache__/
-*.py[oc]
-build/
+*.py[co]
+*.pyo
+*.pyd
+*.so
+*.egg
+*.egg-info/
 dist/
+build/
 wheels/
-*.egg-info
-
-.idea/
+*.manifest
+*.spec
 
 # Virtual environments
-.venv
+.venv/
+.env/
+.envrc
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Windows
+Thumbs.db
+Desktop.ini
+
+# IDEs and editors
+.idea/
+.vscode/
+*.sublime-workspace
+*.sublime-project
+
+# Test and coverage
+htmlcov/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.log
+pytest_cache/
+
+# Data and logs
+data/
+logs/
+
+# Misc
+*.bak
+*.tmp
+
+# Jupyter
+.ipynb_checkpoints
+
+# Docker
+*.pid
+docker-compose.override.yml
+
+# Node
+node_modules/
+
+# System files
+*.swp
+*.swo
+
+# Custom
+# Add more patterns as needed
