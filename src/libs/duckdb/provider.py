@@ -1,3 +1,5 @@
+import os
+
 import duckdb
 from loguru import logger
 from sqlalchemy import create_engine
@@ -16,6 +18,13 @@ class DuckDbClient:
             app_config (AppConfig): An instance of AppConfig containing the database path.
         """
         logger.info("Initializing orange juice database")
+
+        # create file if it does not exist
+        if not os.path.exists(app_config.db_path):
+            logger.info(f"Creating DuckDB database at {app_config.db_path}")
+            directory, filename = os.path.split(app_config.db_path)
+            if directory and not os.path.exists(directory):
+                os.makedirs(directory)
 
         duckdb.install_extension("vss")
         self.engine = create_engine(

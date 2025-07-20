@@ -1,4 +1,3 @@
-
 from chromadb import Embeddings, Documents, EmbeddingFunction
 
 from app.config import AppConfig

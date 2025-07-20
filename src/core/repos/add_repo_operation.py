@@ -42,26 +42,25 @@ class AddRepoOperation:
             ):
                 print(f"Adding commit {commit.hexsha} for {name}")
 
-                session.add(
-                    Commit(
-                        commit_hash=commit.hexsha,
-                        author=commit.author.name,
-                        message=commit.message,
-                        date=str(commit.committed_datetime),
-                        repo_id=repo.id,
-                    )
+                commit_db_object = Commit(
+                    commit_hash=commit.hexsha,
+                    author=commit.author.name,
+                    message=commit.message,
+                    date=str(commit.committed_datetime),
+                    repo_id=repo.id,
                 )
+
+                session.add(commit_db_object)
                 session.flush()
 
                 # Embed the commit message
                 self.chromadb_client.add_to_collection(
                     collection_name="commits",
-                    data={
-                        "message": commit.message,
-                    },
+                    id=f"rep{repo.id}_com{commit_db_object.id}",
+                    data=commit.message,
                     metadata={
                         "repo_id": repo.id,
-                        "commit_id": commit.hexsha,
+                        "commit_id": str(commit_db_object.id),
                     },
                 )
 

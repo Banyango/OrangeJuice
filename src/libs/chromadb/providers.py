@@ -48,7 +48,7 @@ class ChromaClient:
             embedding_function (CustomEmbeddingFunction): An instance of CustomEmbeddingFunction for handling embeddings.
         """
         self.client = chromadb.Client(
-            settings=Settings(persist_directory=app_config.chroma_persist_directory)
+            settings=Settings(persist_directory=app_config.chroma_persist_directory, is_persistent=True)
         )
 
         for c in chroma_collections_registry:
@@ -85,3 +85,11 @@ class ChromaClient:
             documents=[data],
             metadatas=[metadata],
         )
+
+    def delete_collection(self, name: str):
+        """
+        Deletes a collection from the Chroma database.
+        Args:
+            name (str): The name of the collection to delete.
+        """
+        self.client.delete_collection(name)

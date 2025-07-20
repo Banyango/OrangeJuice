@@ -24,6 +24,6 @@ class Commit(Base):
 class CommitCollection:
     name = "commits"
     metadata = {
-        "description": "Collection of commits",
-        "created_at": datetime.now().isoformat(),
+        "repo_id": "the ID of the repository",
+        "commit_id": "the ID of the commit",
     }

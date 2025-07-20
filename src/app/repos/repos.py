@@ -4,6 +4,7 @@ from loguru import logger
 from app.container import Container
 from app.repos.responses import RepoResponseModel
 from core.repos.add_repo_operation import AddRepoOperation
+from core.repos.delete_repo_operation import DeleteRepoOperation
 from core.repos.errors import RepoAlreadyExistsError
 from data.repos.queries import RepoQueries
 
@@ -47,3 +48,22 @@ def create(
         add_repo_operation.execute(path, name)
     except RepoAlreadyExistsError:
         logger.error(f"Repository '{name}' already exists.")
+
+
+@click.argument("name", type=str)
+@click.command()
+@inject
+def delete(
+    name: str,
+    delete_repo_operation: DeleteRepoOperation = Provide[
+        Container.delete_repo_operation
+    ],
+) -> None:
+    """
+    Deletes a repository.
+
+    Args:
+        name (str): The name of the repository.
+        delete_repo_operation (DeleteRepoOperation): The operation to delete a repository.
+    """
+    delete_repo_operation.execute(name)
