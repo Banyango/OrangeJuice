@@ -1,12 +1,14 @@
-from typing import Any
 
 from chromadb import Embeddings, Documents, EmbeddingFunction
 
 from app.config import AppConfig
 from libs.embeddings.provider import EmbeddingClient
 
+
 class CustomEmbeddingFunction(EmbeddingFunction):
-    def __init__(self, app_config: AppConfig, embedding_client: EmbeddingClient) -> None:
+    def __init__(
+        self, app_config: AppConfig, embedding_client: EmbeddingClient
+    ) -> None:
         """
         Initialize the embedding function with a client.
 

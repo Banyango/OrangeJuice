@@ -33,7 +33,7 @@ class EmbeddingClient:
             text_items,
             show_progress_bar=False,
             convert_to_tensor=True,
-            normalize_embeddings=True
+            normalize_embeddings=True,
         )
 
         return embeddings
@@ -43,7 +43,5 @@ class EmbeddingClient:
         self.embedding_model = SentenceTransformer(
             self.model,
             tokenizer_kwargs={"padding_side": "left"},
-            device="cuda" if torch.cuda.is_available() else "cpu"
+            device="cuda" if torch.cuda.is_available() else "cpu",
         )
-
-

@@ -67,3 +67,6 @@ node_modules/
 
 # Custom
 # Add more patterns as needed
+orangejuice.duckdb
+.chroma/
+results/

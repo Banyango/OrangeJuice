@@ -18,10 +18,10 @@ class DuckDbClient:
         logger.info("Initializing orange juice database")
 
         duckdb.install_extension("vss")
-        self.engine = create_engine(f"duckdb:///{app_config.db_path}",
-                                    connect_args={
-                                        'preload_extensions': ['vss']
-                                    })
+        self.engine = create_engine(
+            f"duckdb:///{app_config.db_path}",
+            connect_args={"preload_extensions": ["vss"]},
+        )
 
         Base.metadata.create_all(self.engine)
 

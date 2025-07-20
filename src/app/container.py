@@ -12,6 +12,7 @@ from libs.embeddings.provider import EmbeddingClient
 
 load_dotenv()
 
+
 class Container(containers.DeclarativeContainer):
     config = providers.Configuration()
 
@@ -25,9 +26,7 @@ class Container(containers.DeclarativeContainer):
     )
 
     # AppConfig
-    app_config = providers.Singleton(
-        AppConfig
-    )
+    app_config = providers.Singleton(AppConfig)
 
     # Embedding Client
     embedding_client = providers.Singleton(
@@ -37,13 +36,10 @@ class Container(containers.DeclarativeContainer):
 
     # Chroma Client
     embedding_function = providers.Factory(
-        CustomEmbeddingFunction,
-        embedding_client=embedding_client
+        CustomEmbeddingFunction, embedding_client=embedding_client
     )
     chroma_client = providers.Singleton(
-        ChromaClient,
-        app_config=app_config,
-        embedding_function=embedding_function
+        ChromaClient, app_config=app_config, embedding_function=embedding_function
     )
 
     # DuckDB Client

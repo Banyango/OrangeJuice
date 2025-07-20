@@ -4,22 +4,25 @@ from core.repos.errors import RepoAlreadyExistsError
 from entities.commits import Commit
 from entities.repos import Repo
 from git import Repo as GitRepo
+
+from libs.chromadb.providers import ChromaClient
 from libs.duckdb.provider import DuckDbClient
-from libs.embeddings.provider import EmbeddingClient
 
 
 class AddRepoOperation:
-    def __init__(self, duckdb_client: DuckDbClient, embedding_client: EmbeddingClient) -> None:
+    def __init__(
+        self, duckdb_client: DuckDbClient, chromadb_client: ChromaClient
+    ) -> None:
         """
         Initialize the RepoOperations class.
         This class is responsible for performing operations related to repositories.
 
         Args:
             duckdb_client (DuckDbClient): An instance of DuckDbClient for database operations.
-            embedding_client (EmbeddingClient): An instance of EmbeddingClient for handling embeddings.
+            chromadb_client (ChromaClient): An instance of ChromaClient for handling embeddings.
         """
+        self.chromadb_client = chromadb_client
         self.duckdb_client = duckdb_client
-        self.embedding_client = embedding_client
 
     def execute(self, path: str, name: str) -> None:
         with self.duckdb_client.session() as session:
@@ -34,16 +37,32 @@ class AddRepoOperation:
 
             # get all commits in a repo.
             git_repo = GitRepo(path)
-            for commit in tqdm(git_repo.iter_commits(), desc=f"Adding commits for {name}"):
+            for commit in tqdm(
+                git_repo.iter_commits(), desc=f"Adding commits for {name}"
+            ):
                 print(f"Adding commit {commit.hexsha} for {name}")
 
-                session.add(Commit(
-                    commit_hash=commit.hexsha,
-                    author=commit.author.name,
-                    message=commit.message,
-                    date=str(commit.committed_datetime),
-                    repo_id=repo.id,
-                ))
+                session.add(
+                    Commit(
+                        commit_hash=commit.hexsha,
+                        author=commit.author.name,
+                        message=commit.message,
+                        date=str(commit.committed_datetime),
+                        repo_id=repo.id,
+                    )
+                )
+                session.flush()
 
+                # Embed the commit message
+                self.chromadb_client.add_to_collection(
+                    collection_name="commits",
+                    data={
+                        "message": commit.message,
+                    },
+                    metadata={
+                        "repo_id": repo.id,
+                        "commit_id": commit.hexsha,
+                    },
+                )
 
             session.commit()

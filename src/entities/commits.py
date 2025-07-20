@@ -1,5 +1,6 @@
-from chromadb.types import Collection
-from sqlalchemy import Integer, String, Float, ARRAY, Index
+from datetime import datetime
+
+from sqlalchemy import Integer, String, Float, ARRAY
 from sqlalchemy.sql.schema import Column, ForeignKey, Sequence
 
 from entities.base import Base
@@ -8,10 +9,10 @@ from libs.chromadb.providers import collection
 
 
 class Commit(Base):
-    __tablename__ = 'commits'
+    __tablename__ = "commits"
 
     id = Column(Integer, Sequence("repo_id_sequence"), primary_key=True)
-    repo_id = Column(Integer, ForeignKey('repos.id'))
+    repo_id = Column(Integer, ForeignKey("repos.id"))
     commit_hash = Column(String, nullable=False)
     author = Column(String, nullable=False)
     message = Column(String, nullable=False)
@@ -24,5 +25,5 @@ class CommitCollection:
     name = "commits"
     metadata = {
         "description": "Collection of commits",
-        "created_at": datetime.datetime.now().isoformat(),
+        "created_at": datetime.now().isoformat(),
     }

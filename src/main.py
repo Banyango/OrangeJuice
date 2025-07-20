@@ -1,4 +1,3 @@
-import sys
 import click
 
 from app.container import Container
