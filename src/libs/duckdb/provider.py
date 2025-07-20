@@ -1,3 +1,4 @@
+import duckdb
 from loguru import logger
 from sqlalchemy import create_engine
 from sqlalchemy.orm.session import Session
@@ -16,7 +17,11 @@ class DuckDbClient:
         """
         logger.info("Initializing orange juice database")
 
-        self.engine = create_engine(f"duckdb:///{app_config.db_path}")
+        duckdb.install_extension("vss")
+        self.engine = create_engine(f"duckdb:///{app_config.db_path}",
+                                    connect_args={
+                                        'preload_extensions': ['vss']
+                                    })
 
         Base.metadata.create_all(self.engine)
 

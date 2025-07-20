@@ -1,7 +1,10 @@
-from sqlalchemy import Integer, String, Float, ARRAY
+from chromadb.types import Collection
+from sqlalchemy import Integer, String, Float, ARRAY, Index
 from sqlalchemy.sql.schema import Column, ForeignKey, Sequence
 
 from entities.base import Base
+
+from libs.chromadb.providers import collection
 
 
 class Commit(Base):
@@ -14,4 +17,12 @@ class Commit(Base):
     message = Column(String, nullable=False)
     date = Column(String, nullable=False)
     message_vector = Column(ARRAY(Float), nullable=True)
-    author_vector = Column(ARRAY(Float), nullable=True)
+
+
+@collection
+class CommitCollection:
+    name = "commits"
+    metadata = {
+        "description": "Collection of commits",
+        "created_at": datetime.datetime.now().isoformat(),
+    }
