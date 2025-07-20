@@ -1,0 +1,60 @@
+# Ignore Python cache and artifacts
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+wheels/
+
+# Ignore virtual environments
+.venv/
+.env/
+
+# Ignore test and coverage files
+htmlcov/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.log
+pytest_cache/
+
+# Ignore data and logs
+data/
+logs/
+
+# Ignore OS-specific files
+.DS_Store
+.AppleDouble
+.LSOverride
+Thumbs.db
+Desktop.ini
+
+# Ignore IDE/editor folders
+.idea/
+.vscode/
+
+# Ignore Jupyter checkpoints
+.ipynb_checkpoints
+
+# Ignore Docker files that shouldn't be copied
+*.pid
+docker-compose.override.yml
+
+# Ignore node modules
+node_modules/
+
+# Misc
+*.bak
+*.tmp
+
+# System files
+*.swp
+*.swo
+
