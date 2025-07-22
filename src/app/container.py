@@ -4,6 +4,7 @@ from app.config import AppConfig
 from app.embeddings.embedding_function import CustomEmbeddingFunction
 from core.repos.add_repo_operation import AddRepoOperation
 from core.repos.delete_repo_operation import DeleteRepoOperation
+from data.commits.queries import CommitQueries
 from data.repos.queries import RepoQueries
 from libs.chromadb.providers import ChromaClient
 from libs.duckdb.provider import DuckDbClient
@@ -24,7 +25,9 @@ class Container(containers.DeclarativeContainer):
     wiring_config = containers.WiringConfiguration(
         packages=[
             "app.repos",
+            "app.commits",
             "data.repos",
+            "data.commits",
             "core.repos",
             "libs.duckdb",
         ],
@@ -71,4 +74,14 @@ class Container(containers.DeclarativeContainer):
     )
 
     # queries
-    repo_queries = providers.Factory(RepoQueries)
+    repo_queries = providers.Factory(
+        RepoQueries,
+        duckdb_client=duckdb_client,
+        chromadb_client=chroma_client,
+    )
+
+    commit_queries = providers.Factory(
+        CommitQueries,
+        duckdb_client=duckdb_client,
+        chromadb_client=chroma_client,
+    )

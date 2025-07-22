@@ -1,17 +1,18 @@
 from loguru import logger
 from tqdm import tqdm
 
-from core.repos.errors import RepoAlreadyExistsError, RepoNotFoundError
+from core.repos.errors import RepoNotFoundError
 from entities.commits import Commit
 from entities.repos import Repo
-from git import Repo as GitRepo
 
 from libs.chromadb.providers import ChromaClient
 from libs.duckdb.provider import DuckDbClient
 
 
 class DeleteRepoOperation:
-    def __init__(self, duckdb_client: DuckDbClient, chroma_client: ChromaClient) -> None:
+    def __init__(
+        self, duckdb_client: DuckDbClient, chroma_client: ChromaClient
+    ) -> None:
         """
         Initialize the RepoOperations class.
         This class is responsible for performing operations related to repositories.

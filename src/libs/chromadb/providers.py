@@ -1,7 +1,6 @@
 import chromadb
 from typing import Type, Dict
 
-from chromadb import Settings
 
 from app.embeddings.embedding_function import CustomEmbeddingFunction
 from app.config import AppConfig
@@ -47,14 +46,12 @@ class ChromaClient:
             app_config (AppConfig): An instance of AppConfig containing configuration settings.
             embedding_function (CustomEmbeddingFunction): An instance of CustomEmbeddingFunction for handling embeddings.
         """
-        self.client = chromadb.Client(
-            settings=Settings(persist_directory=app_config.chroma_persist_directory, is_persistent=True)
+        self.client = chromadb.PersistentClient(
+            path=app_config.chroma_persist_directory
         )
 
         for c in chroma_collections_registry:
-            self.client.create_collection(
-                c.name, metadata=c.metadata, embedding_function=embedding_function
-            )
+            self.client.get_or_create_collection(c.name)
 
     def create_collection(self, name):
         """
@@ -80,7 +77,7 @@ class ChromaClient:
             id (str): The unique identifier for the data.
             metadata (Dict[str, str]): Metadata associated with the data.
         """
-        self.client.get_collection(collection_name).add(
+        self.client.get_collection(collection_name).upsert(
             ids=[id],
             documents=[data],
             metadatas=[metadata],
@@ -93,3 +90,16 @@ class ChromaClient:
             name (str): The name of the collection to delete.
         """
         self.client.delete_collection(name)
+
+    def query_collection(self, collection_name: str, query: str, limit: int = 10):
+        """
+        Queries a collection in the Chroma database.
+
+        Args:
+            collection_name (str): The name of the collection to query.
+            query (str): The query string to search for.
+            limit (int): The maximum number of results to return.
+        """
+        return self.client.get_collection(collection_name).query(
+            query_texts=query, n_results=limit
+        )

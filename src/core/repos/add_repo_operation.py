@@ -55,8 +55,8 @@ class AddRepoOperation:
 
                 # Embed the commit message
                 self.chromadb_client.add_to_collection(
-                    collection_name="commits",
                     id=f"rep{repo.id}_com{commit_db_object.id}",
+                    collection_name="commits",
                     data=commit.message,
                     metadata={
                         "repo_id": repo.id,

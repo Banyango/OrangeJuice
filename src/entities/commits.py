@@ -1,9 +1,8 @@
-from datetime import datetime
-
 from sqlalchemy import Integer, String, Float, ARRAY
 from sqlalchemy.sql.schema import Column, ForeignKey, Sequence
 
 from entities.base import Base
+from libs.chromadb.base import CollectionBase
 
 from libs.chromadb.providers import collection
 
@@ -21,7 +20,7 @@ class Commit(Base):
 
 
 @collection
-class CommitCollection:
+class CommitCollection(CollectionBase):
     name = "commits"
     metadata = {
         "repo_id": "the ID of the repository",

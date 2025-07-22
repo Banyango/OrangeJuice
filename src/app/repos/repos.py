@@ -2,7 +2,7 @@ import click
 from loguru import logger
 
 from app.container import Container
-from app.repos.responses import RepoResponseModel
+
 from core.repos.add_repo_operation import AddRepoOperation
 from core.repos.delete_repo_operation import DeleteRepoOperation
 from core.repos.errors import RepoAlreadyExistsError
@@ -12,7 +12,8 @@ from dependency_injector.wiring import Provide, inject
 
 
 @click.command()
-def ls(repo_queries: RepoQueries) -> list:
+@inject
+def ls(repo_queries: RepoQueries = Provide[Container.repo_queries]) -> None:
     """
     Returns a list of repositories.
 
@@ -22,13 +23,18 @@ def ls(repo_queries: RepoQueries) -> list:
     repos = repo_queries.get_repos()
 
     if not repos:
-        return []
+        logger.info("No repositories found.")
 
-    return [RepoResponseModel(name=repo.name) for repo in repos]
+    for repo in repos:
+        logger.info(f"Repository: {repo.name}, Path: {repo.path}")
 
 
-@click.argument("path", type=click.Path(exists=True, file_okay=False, dir_okay=True))
-@click.argument("name", type=str)
+@click.option(
+    "--path",
+    type=click.Path(exists=True, file_okay=False, dir_okay=True),
+    required=True,
+)
+@click.option("--name", type=str, required=True)
 @click.command()
 @inject
 def create(
@@ -50,7 +56,7 @@ def create(
         logger.error(f"Repository '{name}' already exists.")
 
 
-@click.argument("name", type=str)
+@click.option("--name", type=str, required=True)
 @click.command()
 @inject
 def delete(
