@@ -7,7 +7,7 @@ lint:
 	uvx ruff check . --fix
 
 test:
-	pytest --junitxml=results/junit.xml
+	uv run pytest tests --junitxml=results/junit.xml
 
 help:
 	@echo "Available commands:"

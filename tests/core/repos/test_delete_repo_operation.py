@@ -15,7 +15,7 @@ def test_execute_should_raise_repo_not_found_error():
     client.session.return_value.__enter__.return_value = session
 
     # Act & Assert
-    op = DeleteRepoOperation(duckdb_client=client)
+    op = DeleteRepoOperation(duckdb_client=client, chroma_client=MagicMock())
     with pytest.raises(RepoNotFoundError):
         op.execute("nonexistent-repo")
 
@@ -29,11 +29,11 @@ def test_execute_should_delete_repo():
     client.session.return_value.__enter__.return_value = session
 
     # Act
-    op = DeleteRepoOperation(duckdb_client=client)
+    op = DeleteRepoOperation(duckdb_client=client, chroma_client=MagicMock())
     op.execute("test-repo")
 
     # Assert
     session.query.assert_called_with(Commit)
     session.query.return_value.filter.assert_called()
     session.delete.assert_called_once_with(repo)
-    session.commit.assert_called_once()
+    assert session.commit.call_count == 2
