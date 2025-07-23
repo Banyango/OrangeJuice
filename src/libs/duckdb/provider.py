@@ -1,9 +1,12 @@
+import os
+
+import duckdb
 from loguru import logger
 from sqlalchemy import create_engine
 from sqlalchemy.orm.session import Session
 
 from app.config import AppConfig
-from entities.repos.entities import Base
+from entities.repos import Base
 
 
 class DuckDbClient:
@@ -16,7 +19,18 @@ class DuckDbClient:
         """
         logger.info("Initializing orange juice database")
 
-        self.engine = create_engine(f"duckdb:///{app_config.db_path}")
+        # create file if it does not exist
+        if not os.path.exists(app_config.db_path):
+            logger.info(f"Creating DuckDB database at {app_config.db_path}")
+            directory, filename = os.path.split(app_config.db_path)
+            if directory and not os.path.exists(directory):
+                os.makedirs(directory)
+
+        duckdb.install_extension("vss")
+        self.engine = create_engine(
+            f"duckdb:///{app_config.db_path}",
+            connect_args={"preload_extensions": ["vss"]},
+        )
 
         Base.metadata.create_all(self.engine)
 

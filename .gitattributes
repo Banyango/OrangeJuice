@@ -1,0 +1,33 @@
+# Set default behavior to automatically normalize line endings
+* text=auto
+
+# Explicitly declare text files
+*.py text
+*.md text
+*.toml text
+*.json text
+*.yml text
+*.yaml text
+*.csv text
+*.dockerignore text
+*.gitignore text
+
+# Treat images and binaries as binary
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.pdf binary
+*.zip binary
+*.tar binary
+*.gz binary
+*.db binary
+
+# Preserve executable bit for scripts
+*.sh eol=lf
+*.py eol=lf
+
+# Custom rules
+# Add more patterns as needed
+
