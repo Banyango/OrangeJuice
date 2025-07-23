@@ -33,3 +33,9 @@ jobs:
 
     - name: Run tests
       run: uv run pytest tests
+
+    - name: Upload test results
+      uses: actions/upload-artifact@v4
+      with:
+        name: pytest-report
+        path: results/junit.xml
