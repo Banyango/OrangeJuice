@@ -3,10 +3,10 @@ from dependency_injector import containers, providers
 from app.config import AppConfig
 from dotenv import load_dotenv
 
-load_dotenv()
-
 from core.container import Container as CoreContainer
 from libs.container import Container as LibsContainer
+
+load_dotenv()
 
 
 class Container(containers.DeclarativeContainer):

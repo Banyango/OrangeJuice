@@ -1,6 +1,5 @@
 import os
 
-import duckdb
 from loguru import logger
 from sqlalchemy import create_engine
 from sqlalchemy.orm.session import Session

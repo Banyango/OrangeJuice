@@ -1,4 +1,4 @@
-from sqlalchemy import Integer, String, Float, ARRAY
+from sqlalchemy import Integer, String
 from sqlalchemy.sql.schema import Column, ForeignKey, Sequence
 
 from entities.base import Base
