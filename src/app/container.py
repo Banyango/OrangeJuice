@@ -37,3 +37,5 @@ class Container(containers.DeclarativeContainer):
         LibsContainer,
         config=config,
     )
+
+    core.override(libs)
