@@ -15,7 +15,7 @@ def test_execute_should_raise_repo_not_found_error():
     client.session.return_value.__enter__.return_value = session
 
     # Act & Assert
-    op = DeleteRepoOperation(query_client=client, chroma_client=MagicMock())
+    op = DeleteRepoOperation(query_client=client, search_client=MagicMock())
     with pytest.raises(RepoNotFoundError):
         op.execute("nonexistent-repo")
 
@@ -29,7 +29,7 @@ def test_execute_should_delete_repo():
     client.session.return_value.__enter__.return_value = session
 
     # Act
-    op = DeleteRepoOperation(query_client=client, chroma_client=MagicMock())
+    op = DeleteRepoOperation(query_client=client, search_client=MagicMock())
     op.execute("test-repo")
 
     # Assert
