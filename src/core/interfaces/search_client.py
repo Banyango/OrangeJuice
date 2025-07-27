@@ -13,7 +13,9 @@ class SearchClient(ABC):
         pass
 
     @abstractmethod
-    def add_to_collection(self, collection_name: str, data: str, id: str, metadata: Dict[str, str]):
+    def add_to_collection(
+        self, collection_name: str, data: str, id: str, metadata: Dict[str, str]
+    ):
         """
         Add data to a specified collection.
         Args:

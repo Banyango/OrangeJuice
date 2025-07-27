@@ -10,9 +10,7 @@ from entities.repos import Repo
 
 
 class UpdateRepoOperation:
-    def __init__(
-        self, query_client: QueryClient, chroma_client: SearchClient
-    ) -> None:
+    def __init__(self, query_client: QueryClient, chroma_client: SearchClient) -> None:
         """
         Initialize the RepoOperations class.
         This class is responsible for performing operations related to repositories.
@@ -26,7 +24,9 @@ class UpdateRepoOperation:
 
     def execute(self, name: str) -> None:
         with self.query_client.session() as session:
-            repo: Repo | None = session.query(Repo).filter(Repo.name == name).one_or_none()
+            repo: Repo | None = (
+                session.query(Repo).filter(Repo.name == name).one_or_none()
+            )
             if repo is None:
                 raise RepoNotFoundError(name)
 
@@ -35,10 +35,14 @@ class UpdateRepoOperation:
             git_repo = GitRepo(repo.path)
 
             for new_commit in git_repo.iter_commits():
-                existing_commit = session.query(Commit).filter(
-                    Commit.commit_hash == new_commit.hexsha,
-                    Commit.repo_id == repo.id
-                ).one_or_none()
+                existing_commit = (
+                    session.query(Commit)
+                    .filter(
+                        Commit.commit_hash == new_commit.hexsha,
+                        Commit.repo_id == repo.id,
+                    )
+                    .one_or_none()
+                )
 
                 if existing_commit is not None:
                     matched_commits.append(existing_commit)
@@ -61,7 +65,7 @@ class UpdateRepoOperation:
                             "repo_id": repo.id,
                             "commit_id": commit_db_object.id,
                             "commit_hash": new_commit.hexsha,
-                        }
+                        },
                     )
 
             # Remove commits in the db that are not in the matched commits
@@ -71,8 +75,7 @@ class UpdateRepoOperation:
                     logger.info(f"Deleting commit {db_commit.commit_hash} for {name}")
                     session.delete(db_commit)
                     self.search_client.remove_from_collection(
-                        collection_name="commits",
-                        id=f"rep{repo.id}_com{db_commit.id}"
+                        collection_name="commits", id=f"rep{repo.id}_com{db_commit.id}"
                     )
 
             session.commit()

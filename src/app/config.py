@@ -3,7 +3,7 @@ import os
 
 
 @dataclass
-class AppConfig():
+class AppConfig:
     def __init__(self):
         """
         Initialize the application configuration.

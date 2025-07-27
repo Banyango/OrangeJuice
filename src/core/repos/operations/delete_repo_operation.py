@@ -7,10 +7,9 @@ from core.interfaces.search_client import SearchClient
 from entities.commits import Commit
 from entities.repos import Repo
 
+
 class DeleteRepoOperation:
-    def __init__(
-        self, query_client: QueryClient, chroma_client: SearchClient
-    ) -> None:
+    def __init__(self, query_client: QueryClient, chroma_client: SearchClient) -> None:
         """
         Initialize the RepoOperations class.
         This class is responsible for performing operations related to repositories.

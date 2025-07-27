@@ -1,6 +1,7 @@
 from core.interfaces.query_client import QueryClient
 from entities.repos import Repo
 
+
 class RepoQueries:
     def __init__(self, query_client: QueryClient) -> None:
         """

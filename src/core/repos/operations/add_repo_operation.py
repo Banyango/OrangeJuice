@@ -11,9 +11,7 @@ from pathlib import Path
 
 
 class AddRepoOperation:
-    def __init__(
-        self, query_client: QueryClient, search_client: SearchClient
-    ) -> None:
+    def __init__(self, query_client: QueryClient, search_client: SearchClient) -> None:
         """
         Initialize the RepoOperations class.
         This class is responsible for performing operations related to repositories.
@@ -27,7 +25,9 @@ class AddRepoOperation:
 
     def execute(self, path: str, name: str) -> None:
         with self.query_client.session() as session:
-            exists = session.query(Repo).filter(Repo.path == path or Repo.name == name).all()
+            exists = (
+                session.query(Repo).filter(Repo.path == path or Repo.name == name).all()
+            )
             if exists:
                 raise RepoAlreadyExistsError(path)
 

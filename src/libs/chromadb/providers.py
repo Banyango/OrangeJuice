@@ -36,9 +36,7 @@ def collection(cls: Type[CollectionBase]) -> Type[CollectionBase]:
 
 
 class ChromaClient(SearchClient):
-    def __init__(
-        self, app_config: AppConfig
-    ):
+    def __init__(self, app_config: AppConfig):
         """
         Initializes the SearchClient with a given client.
 

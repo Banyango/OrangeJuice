@@ -9,6 +9,7 @@ from app.config import AppConfig
 from core.interfaces.query_client import QueryClient
 from entities.repos import Base
 
+
 class DuckDbClient(QueryClient):
     def __init__(self, app_config: AppConfig) -> None:
         """

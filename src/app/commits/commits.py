@@ -3,7 +3,6 @@ from dependency_injector.wiring import Provide, inject
 from loguru import logger
 
 from app.container import Container
-from container import ApplicationContainer
 from core.commits.queries.queries import CommitQueries
 
 
@@ -14,7 +13,7 @@ from core.commits.queries.queries import CommitQueries
 def query(
     name: str,
     query: str,
-    commit_queries: CommitQueries = Provide[ApplicationContainer.commit_queries],
+    commit_queries: CommitQueries = Provide[Container.core.commit_queries],
 ) -> None:
     """
     Creates a new repository.
