@@ -10,17 +10,17 @@ from entities.repos import Repo
 
 
 class UpdateRepoOperation:
-    def __init__(self, query_client: QueryClient, chroma_client: SearchClient) -> None:
+    def __init__(self, query_client: QueryClient, search_client: SearchClient) -> None:
         """
         Initialize the RepoOperations class.
         This class is responsible for performing operations related to repositories.
 
         Args:
             query_client (QueryClient): An instance of QueryClient for database operations.
-            chroma_client (SearchClient): An instance of SearchClient for handling embeddings.
+            search_client (SearchClient): An instance of SearchClient for handling embeddings.
         """
         self.query_client = query_client
-        self.search_client = chroma_client
+        self.search_client = search_client
 
     def execute(self, name: str) -> None:
         with self.query_client.session() as session:

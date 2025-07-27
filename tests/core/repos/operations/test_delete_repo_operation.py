@@ -1,7 +1,7 @@
 from unittest.mock import MagicMock
 
 import pytest
-from core.repos.delete_repo_operation import DeleteRepoOperation
+from core.repos.operations.delete_repo_operation import DeleteRepoOperation
 from core.repos.errors import RepoNotFoundError
 from entities.commits import Commit
 from entities.repos import Repo
