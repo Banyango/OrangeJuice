@@ -39,7 +39,7 @@ python main.py repos ls
 ## Project Structure
 ```
 src
-├── app            # CLI (Textual, Click, etc.)
+├── app            # CLI (Click)
 │   ├── repos
 │   │   ├── repo.py        # CLI subcommands & DuckDB client
 │   │   ├── repos.py
@@ -48,15 +48,14 @@ src
 │   ├── embeddings
 │   ├── config.py
 │   ├── container.py
-├── core           # Business logic
-│   ├── repos
-│   │   ├── add_repo_operation.py
-│   │   ├── errors.py
-├── data           # Pure queries/statements
+├── core           # Business logic (operations & queries)
 │   ├── commits
+│   │   ├── operations/
+│   │   ├── queries/
 │   ├── repos
-│   │   ├── queries.py
-│   │   ├── statements.py
+│   │   ├── operations/
+│   │   ├── queries/
+│   │   ├── errors.py
 ├── entities       # Inner-level entities/models
 │   ├── base.py
 │   ├── commits.py
@@ -82,8 +81,5 @@ MIT
 ## Acknowledgements
 - [DuckDB](https://duckdb.org/)
 - [ChromaDB](https://www.trychroma.com/)
-- [Textual](https://textual.textualize.io/)
 
 ---
-
-*OrangeJuice: Squeeze the most out of your git.*
