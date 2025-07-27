@@ -17,7 +17,7 @@ class Container(containers.DeclarativeContainer):
     config = providers.Configuration()
 
     wiring_config = containers.WiringConfiguration(
-        packages=["app.repos", "app.commits", "core.repos", "core.commits"],
+        packages=["app.repos", "app.commits"],
     )
 
     # ==== AppConfig =====

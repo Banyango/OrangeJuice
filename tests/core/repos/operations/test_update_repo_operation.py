@@ -62,7 +62,7 @@ def test_execute_should_add_commits_when_commits_do_not_exist_in_db():
     # Arrange
     client = MagicMock()
     session = MagicMock()
-    repo = Repo(id=1,name="test-repo", path="/old/path/to/repo")
+    repo = Repo(id=1, name="test-repo", path="/old/path/to/repo")
     commit1 = Commit(id=1, commit_hash="abc123", repo_id=repo.id)
     session.query.return_value.filter.return_value.one_or_none.side_effect = [
         repo,
@@ -83,7 +83,7 @@ def test_execute_should_add_commits_when_commits_do_not_exist_in_db():
     mock_git_repo = MagicMock()
     mock_git_repo.iter_commits.return_value = [
         MagicMock(hexsha="abc123"),
-        MagicMock(hexsha="def456", message="New commit message")
+        MagicMock(hexsha="def456", message="New commit message"),
     ]
     with patch(
         "core.repos.operations.update_repo_operation.GitRepo",
@@ -92,19 +92,15 @@ def test_execute_should_add_commits_when_commits_do_not_exist_in_db():
         op = UpdateRepoOperation(query_client=client, search_client=search_client)
         op.execute("test-repo")
 
-     # Assert
+    # Assert
     session.commit.assert_called()
     session.add.assert_called()
     mock_git_repo.iter_commits.assert_called_once()
     search_client.add_to_collection.assert_called_with(
         collection_name="commits",
         data="New commit message",
-        id=f"rep1_com1",
-        metadata={
-            "repo_id": repo.id,
-            "commit_id": "1",
-            "commit_hash": "def456"
-        },
+        id="rep1_com1",
+        metadata={"repo_id": repo.id, "commit_id": "1", "commit_hash": "def456"},
     )
 
 

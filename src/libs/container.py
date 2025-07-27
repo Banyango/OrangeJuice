@@ -3,6 +3,7 @@ from dependency_injector import containers, providers
 from app.config import AppConfig
 from libs.chromadb.providers import ChromaClient
 from libs.duckdb.provider import DuckDbClient
+from libs.git.providers import PythonGitClient
 
 
 class Container(containers.DeclarativeContainer):
@@ -19,6 +20,7 @@ class Container(containers.DeclarativeContainer):
         AppConfig,
     )
 
+    # note these override the dependencies in core.container.Container
     # Chroma Client
     search_client = providers.Singleton(
         ChromaClient,
@@ -28,5 +30,11 @@ class Container(containers.DeclarativeContainer):
     # Query client
     query_client = providers.Singleton(
         DuckDbClient,
+        app_config=app_config,
+    )
+
+    # Git Client
+    git_client = providers.Singleton(
+        PythonGitClient,
         app_config=app_config,
     )
