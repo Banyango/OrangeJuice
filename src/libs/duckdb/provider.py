@@ -6,10 +6,10 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm.session import Session
 
 from app.config import AppConfig
+from core.interfaces.query_client import QueryClient
 from entities.repos import Base
 
-
-class DuckDbClient:
+class DuckDbClient(QueryClient):
     def __init__(self, app_config: AppConfig) -> None:
         """
         Initialize the DuckDbClient and connect to the DuckDB database.
@@ -26,7 +26,6 @@ class DuckDbClient:
             if directory and not os.path.exists(directory):
                 os.makedirs(directory)
 
-        duckdb.install_extension("vss")
         self.engine = create_engine(
             f"duckdb:///{app_config.db_path}",
             connect_args={"preload_extensions": ["vss"]},

@@ -2,8 +2,8 @@ import chromadb
 from typing import Type, Dict
 
 
-from app.embeddings.embedding_function import CustomEmbeddingFunction
 from app.config import AppConfig
+from core.interfaces.search_client import SearchClient
 from .base import CollectionBase
 
 chroma_collections_registry: list[Type[CollectionBase]] = []
@@ -35,16 +35,15 @@ def collection(cls: Type[CollectionBase]) -> Type[CollectionBase]:
     return cls
 
 
-class ChromaClient:
+class ChromaClient(SearchClient):
     def __init__(
-        self, app_config: AppConfig, embedding_function: CustomEmbeddingFunction
+        self, app_config: AppConfig
     ):
         """
-        Initializes the ChromaClient with a given client.
+        Initializes the SearchClient with a given client.
 
         Args:
             app_config (AppConfig): An instance of AppConfig containing configuration settings.
-            embedding_function (CustomEmbeddingFunction): An instance of CustomEmbeddingFunction for handling embeddings.
         """
         self.client = chromadb.PersistentClient(
             path=app_config.chroma_persist_directory
@@ -103,3 +102,13 @@ class ChromaClient:
         return self.client.get_collection(collection_name).query(
             query_texts=query, n_results=limit
         )
+
+    def remove_from_collection(self, collection_name: str, id: str):
+        """
+        Removes an item from a specified collection in the Chroma database.
+
+        Args:
+            collection_name (str): The name of the collection to remove data from.
+            id (str): The unique identifier for the data to be removed.
+        """
+        self.client.get_collection(collection_name).delete(ids=[id])

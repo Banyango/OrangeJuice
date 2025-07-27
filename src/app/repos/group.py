@@ -1,6 +1,6 @@
 import click
 
-from app.repos.repos import create, ls, delete
+from app.repos.repos import create, ls, delete, update
 
 
 @click.group()
@@ -14,3 +14,4 @@ def repos():
 repos.add_command(create)
 repos.add_command(ls)
 repos.add_command(delete)
+repos.add_command(update)

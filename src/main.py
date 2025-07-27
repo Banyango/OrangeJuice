@@ -1,9 +1,10 @@
 import click
 
+from app.config import AppConfig
 from app.repos.group import repos
 from app.commits.group import commits
 
-from app.container import Container
+from container import ApplicationContainer
 
 
 @click.group()
@@ -14,7 +15,7 @@ def cli():
     pass
 
 
-container = Container()
+container = ApplicationContainer()
 container.init_resources()
 
 cli.add_command(repos)

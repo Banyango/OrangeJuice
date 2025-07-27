@@ -1,31 +1,29 @@
 from loguru import logger
 from tqdm import tqdm
 
+from core.interfaces.query_client import QueryClient
 from core.repos.errors import RepoNotFoundError
+from core.interfaces.search_client import SearchClient
 from entities.commits import Commit
 from entities.repos import Repo
 
-from libs.chromadb.providers import ChromaClient
-from libs.duckdb.provider import DuckDbClient
-
-
 class DeleteRepoOperation:
     def __init__(
-        self, duckdb_client: DuckDbClient, chroma_client: ChromaClient
+        self, query_client: QueryClient, chroma_client: SearchClient
     ) -> None:
         """
         Initialize the RepoOperations class.
         This class is responsible for performing operations related to repositories.
 
         Args:
-            duckdb_client (DuckDbClient): An instance of DuckDbClient for database operations.
-            chroma_client (ChromaClient): An instance of ChromaClient for handling embeddings.
+            query_client (QueryClient): An instance of QueryClient for database operations.
+            chroma_client (SearchClient): An instance of SearchClient for handling embeddings.
         """
-        self.duckdb_client = duckdb_client
-        self.chromadb_client = chroma_client
+        self.query_client = query_client
+        self.search_client = chroma_client
 
     def execute(self, name: str) -> None:
-        with self.duckdb_client.session() as session:
+        with self.query_client.session() as session:
             logger.info(f"Deleting repository: {name}")
 
             repo = session.query(Repo).filter(Repo.name == name).one_or_none()
@@ -39,7 +37,7 @@ class DeleteRepoOperation:
             # session.flush is not working as expected, so we use commit directly
             session.commit()
 
-            self.chromadb_client.delete_collection("commits")
+            self.search_client.delete_collection("commits")
 
             logger.info(f"Deleting repository {name}")
             session.delete(repo)
