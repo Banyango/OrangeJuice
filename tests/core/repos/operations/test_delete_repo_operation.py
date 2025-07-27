@@ -1,7 +1,7 @@
 from unittest.mock import MagicMock
 
 import pytest
-from core.repos.delete_repo_operation import DeleteRepoOperation
+from core.repos.operations.delete_repo_operation import DeleteRepoOperation
 from core.repos.errors import RepoNotFoundError
 from entities.commits import Commit
 from entities.repos import Repo
@@ -15,7 +15,7 @@ def test_execute_should_raise_repo_not_found_error():
     client.session.return_value.__enter__.return_value = session
 
     # Act & Assert
-    op = DeleteRepoOperation(duckdb_client=client, chroma_client=MagicMock())
+    op = DeleteRepoOperation(query_client=client, search_client=MagicMock())
     with pytest.raises(RepoNotFoundError):
         op.execute("nonexistent-repo")
 
@@ -29,7 +29,7 @@ def test_execute_should_delete_repo():
     client.session.return_value.__enter__.return_value = session
 
     # Act
-    op = DeleteRepoOperation(duckdb_client=client, chroma_client=MagicMock())
+    op = DeleteRepoOperation(query_client=client, search_client=MagicMock())
     op.execute("test-repo")
 
     # Assert

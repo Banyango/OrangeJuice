@@ -1,37 +1,37 @@
 from tqdm import tqdm
 
+from core.interfaces.query_client import QueryClient
 from core.repos.errors import RepoAlreadyExistsError
+from core.interfaces.search_client import SearchClient
 from entities.commits import Commit
 from entities.repos import Repo
 from git import Repo as GitRepo
 
-from libs.chromadb.providers import ChromaClient
-from libs.duckdb.provider import DuckDbClient
+from pathlib import Path
 
 
 class AddRepoOperation:
-    def __init__(
-        self, duckdb_client: DuckDbClient, chromadb_client: ChromaClient
-    ) -> None:
+    def __init__(self, query_client: QueryClient, search_client: SearchClient) -> None:
         """
         Initialize the RepoOperations class.
         This class is responsible for performing operations related to repositories.
 
         Args:
-            duckdb_client (DuckDbClient): An instance of DuckDbClient for database operations.
-            chromadb_client (ChromaClient): An instance of ChromaClient for handling embeddings.
+            query_client (QueryClient): An instance of QueryClient for database operations.
+            search_client (SearchClient): An instance of SearchClient for handling embeddings.
         """
-        self.chromadb_client = chromadb_client
-        self.duckdb_client = duckdb_client
+        self.search_client = search_client
+        self.query_client = query_client
 
     def execute(self, path: str, name: str) -> None:
-        with self.duckdb_client.session() as session:
-            repo = session.query(Repo).filter(Repo.path == path).one_or_none()
-
-            if repo is not None:
+        with self.query_client.session() as session:
+            exists = (
+                session.query(Repo).filter(Repo.path == path or Repo.name == name).all()
+            )
+            if exists:
                 raise RepoAlreadyExistsError(path)
 
-            repo = Repo(path=path, name=name)
+            repo = Repo(path=str(Path(path).resolve()), name=name)
             session.add(repo)
             session.flush()
 
@@ -44,9 +44,6 @@ class AddRepoOperation:
 
                 commit_db_object = Commit(
                     commit_hash=commit.hexsha,
-                    author=commit.author.name,
-                    message=commit.message,
-                    date=str(commit.committed_datetime),
                     repo_id=repo.id,
                 )
 
@@ -54,7 +51,7 @@ class AddRepoOperation:
                 session.flush()
 
                 # Embed the commit message
-                self.chromadb_client.add_to_collection(
+                self.search_client.add_to_collection(
                     id=f"rep{repo.id}_com{commit_db_object.id}",
                     collection_name="commits",
                     data=commit.message,
