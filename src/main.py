@@ -6,14 +6,12 @@ from app.repos.group import repos
 from app.commits.group import commits
 
 
-
 @click.group()
 def cli():
     """
     OrangeJuice CLI Application
     """
     pass
-
 
 
 container = Container()

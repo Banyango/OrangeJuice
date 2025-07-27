@@ -4,11 +4,14 @@ from core.repos.operations.add_repo_operation import AddRepoOperation
 from core.repos.errors import RepoAlreadyExistsError
 from entities.repos import Repo
 
+
 def test_execute_should_raise_repo_already_exists_error_when_name_exists():
     # Arrange
     client = MagicMock()
     session = MagicMock()
-    session.query.return_value.filter.return_value.all.return_value = [Repo(name="existing-repo", path="/path/to/repo")]
+    session.query.return_value.filter.return_value.all.return_value = [
+        Repo(name="existing-repo", path="/path/to/repo")
+    ]
     client.session.return_value.__enter__.return_value = session
 
     # Act & Assert
@@ -16,6 +19,7 @@ def test_execute_should_raise_repo_already_exists_error_when_name_exists():
         op = AddRepoOperation(query_client=client, search_client=MagicMock())
         with pytest.raises(RepoAlreadyExistsError):
             op.execute("/path/to/repo", "existing-repo")
+
 
 def test_execute_should_add_repo():
     # Arrange

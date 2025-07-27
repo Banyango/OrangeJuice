@@ -13,15 +13,11 @@ class Container(containers.DeclarativeContainer):
     """
     Dependency Injection Container for the OrangeJuice application.
     """
+
     config = providers.Configuration()
 
     wiring_config = containers.WiringConfiguration(
-        packages=[
-            "app.repos",
-            "app.commits",
-            "core.repos",
-            "core.commits"
-        ],
+        packages=["app.repos", "app.commits", "core.repos", "core.commits"],
     )
 
     # ==== AppConfig =====

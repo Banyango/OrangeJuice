@@ -41,9 +41,7 @@ def ls(repo_queries: RepoQueries = Provide[Container.core.repo_queries]) -> None
 def create(
     path: str,
     name: str,
-    add_repo_operation: AddRepoOperation = Provide[
-        Container.core.add_repo_operation
-    ],
+    add_repo_operation: AddRepoOperation = Provide[Container.core.add_repo_operation],
 ) -> None:
     """
     Creates a new repository.

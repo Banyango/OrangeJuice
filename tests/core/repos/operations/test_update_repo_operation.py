@@ -4,6 +4,7 @@ from core.repos.operations.update_repo_operation import UpdateRepoOperation
 from core.repos.errors import RepoNotFoundError
 from entities.repos import Repo
 
+
 def test_execute_should_raise_repo_not_found_error():
     # Arrange
     client = MagicMock()
@@ -15,6 +16,7 @@ def test_execute_should_raise_repo_not_found_error():
         op = UpdateRepoOperation(query_client=client, search_client=MagicMock())
         with pytest.raises(RepoNotFoundError):
             op.execute("nonexistent-repo")
+
 
 def test_execute_should_update_repo():
     # Arrange
@@ -28,8 +30,14 @@ def test_execute_should_update_repo():
 
     # Mock GitRepo and its iter_commits
     mock_git_repo = MagicMock()
-    mock_git_repo.iter_commits.return_value = [MagicMock(hexsha="abc123"), MagicMock(hexsha="def456")]
-    with patch("core.repos.operations.update_repo_operation.GitRepo", return_value=mock_git_repo):
+    mock_git_repo.iter_commits.return_value = [
+        MagicMock(hexsha="abc123"),
+        MagicMock(hexsha="def456"),
+    ]
+    with patch(
+        "core.repos.operations.update_repo_operation.GitRepo",
+        return_value=mock_git_repo,
+    ):
         op = UpdateRepoOperation(query_client=client, search_client=search_client)
         op.execute("test-repo")
 
@@ -38,4 +46,3 @@ def test_execute_should_update_repo():
     mock_git_repo.iter_commits.assert_called_once()
     assert repo.name == "test-repo"
     assert repo.path == "/old/path/to/repo"
-

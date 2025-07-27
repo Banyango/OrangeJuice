@@ -21,12 +21,12 @@ class Container(containers.DeclarativeContainer):
 
     # Chroma Client
     search_client = providers.Singleton(
-            ChromaClient,
-            app_config=app_config,
-        )
+        ChromaClient,
+        app_config=app_config,
+    )
 
     # Query client
     query_client = providers.Singleton(
-            DuckDbClient,
-            app_config=app_config,
-        )
+        DuckDbClient,
+        app_config=app_config,
+    )

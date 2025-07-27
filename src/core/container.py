@@ -14,6 +14,7 @@ class Container(containers.DeclarativeContainer):
     """
     Dependency Injection Container for the OrangeJuice application.
     """
+
     config = providers.Configuration()
 
     app_config = providers.Singleton(AppConfig)
