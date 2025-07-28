@@ -47,4 +47,4 @@ class FilesQueries:
                     )
                 )
 
-            return list(results)
+            return results
