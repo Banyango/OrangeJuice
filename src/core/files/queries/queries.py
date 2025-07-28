@@ -1,8 +1,10 @@
-from loguru import logger
+from typing import List
 
 from core.interfaces.git_client import GitClient
 from core.interfaces.query_client import QueryClient
 from entities.repos import Repo
+
+from core.files.queries.models import FileQueryModel
 
 
 class FilesQueries:
@@ -18,7 +20,7 @@ class FilesQueries:
         self.git_client = git_client
         self.query_client = query_client
 
-    def get_file_history(self, file_path: str, repo_name: str) -> list:
+    def get_file_history(self, file_path: str, repo_name: str) -> List[FileQueryModel]:
         """
         Returns the history of a file in the repository.
 
@@ -27,19 +29,22 @@ class FilesQueries:
             repo_name (str): The path to the repository.
         """
         with self.query_client.session() as session:
-            repo: Repo | None = session.query(Repo).filter(Repo.name == repo_name).one_or_none()
+            repo: Repo | None = (
+                session.query(Repo).filter(Repo.name == repo_name).one_or_none()
+            )
 
             if not repo:
                 return []
 
-            results = {}
-            for commit in self.git_client.file_history(file_path, repo.path):
-                logger.info(f"Commit: {commit.hexsha}, Message: {commit.message.strip()}")
-
-                results[commit.hexsha] = {
-                    "message": commit.message.strip(),
-                    "author": commit.author.name,
-                    "date": commit.committed_datetime.isoformat(),
-                }
+            results = []
+            for commit in self.git_client.iter_file_history(file_path, repo.path):
+                results.append(
+                    FileQueryModel(
+                        commit_hash=commit.hexsha,
+                        message=commit.message.strip(),
+                        author=commit.author.name,
+                        date=commit.committed_datetime.isoformat(),
+                    )
+                )
 
             return list(results)

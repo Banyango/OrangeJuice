@@ -36,5 +36,4 @@ class Container(containers.DeclarativeContainer):
     # Git Client
     git_client = providers.Singleton(
         PythonGitClient,
-        app_config=app_config,
     )
