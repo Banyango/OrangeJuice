@@ -11,8 +11,8 @@ class PythonGitClient(GitClient):
         Retrieve the history of a file in the repository.
 
         Args:
-            file_name (str): The name of the repository.
-            repo_path (str): The path to the file within the repository.
+            file_name (str): The path to the file within the repository.
+            repo_path (str): The path to the repository.
 
         Returns:
             Dict: A dictionary containing the file history.
