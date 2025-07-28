@@ -4,6 +4,7 @@ from app.container import Container
 
 from app.repos.group import repos
 from app.commits.group import commits
+from app.files.group import files
 
 
 @click.group()
@@ -20,6 +21,7 @@ container.init_resources()
 
 cli.add_command(repos)
 cli.add_command(commits)
+cli.add_command(files)
 
 if __name__ == "__main__":
     cli()
