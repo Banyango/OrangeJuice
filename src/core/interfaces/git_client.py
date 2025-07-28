@@ -11,7 +11,7 @@ class GitClient(ABC):
         Retrieve the history of a file in the repository.
 
         Args:
-            file_name (str): The name of the file within the repository.
-            repo_path (str): The path to the file within the repository.
+            file_name (str): The path to the file relative to the repository root.
+            repo_path (str): The path to the repository.
         """
         pass
